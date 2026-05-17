@@ -1,44 +1,55 @@
-package br.com.lutero.pedidos_api.entities;
+package br.com.lutero.pedidos_api.dto;
 
 import java.time.LocalDate;
 
 import br.com.lutero.pedidos_api.Enums.PaymentMetodo;
 import br.com.lutero.pedidos_api.Enums.PaymentStatus;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import br.com.lutero.pedidos_api.entities.Order;
+import br.com.lutero.pedidos_api.entities.Payment;
 
-@Entity
-@Table(name= "tb_payment")
-public class Payment {
+public class PaymentDTO {
 
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
-
-    @OneToOne
-    @JoinColumn(name="order_id")
-    private Order order;
-
+    private Long orderId;
     private double soma;
-
-    @Enumerated(EnumType.STRING)
     private PaymentMetodo paymentMetodo;
-
-    @Enumerated(EnumType.STRING)
     private PaymentStatus status;
-
     private LocalDate paymentDate;
-
     private LocalDate createdAt;
-
     private LocalDate updatedAt;
+
+    public PaymentDTO() {
+    }
+
+    public PaymentDTO(Long id, Long orderId, double soma, PaymentMetodo paymentMetodo, PaymentStatus status,
+            LocalDate paymentDate, LocalDate createdAt, LocalDate updatedAt) {
+        this.id = id;
+        this.orderId = orderId;
+        this.soma = soma;
+        this.paymentMetodo = paymentMetodo;
+        this.status = status;
+        this.paymentDate = paymentDate;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public static PaymentDTO fromEntity(Payment payment) {
+        if (payment == null) {
+            return null;
+        }
+
+        Order order = payment.getOrder();
+
+        return new PaymentDTO(
+                payment.getId(),
+                order != null ? order.getId() : null,
+                payment.getSoma(),
+                payment.getPaymentMetodo(),
+                payment.getStatus(),
+                payment.getPaymentDate(),
+                payment.getCreatedAt(),
+                payment.getUpdatedAt());
+    }
 
     public Long getId() {
         return id;
@@ -48,12 +59,12 @@ public class Payment {
         this.id = id;
     }
 
-    public Order getOrder() {
-        return order;
+    public Long getOrderId() {
+        return orderId;
     }
 
-    public void setOrder(Order order) {
-        this.order = order;
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
     }
 
     public double getSoma() {
@@ -103,5 +114,4 @@ public class Payment {
     public void setUpdatedAt(LocalDate updatedAt) {
         this.updatedAt = updatedAt;
     }
-
 }

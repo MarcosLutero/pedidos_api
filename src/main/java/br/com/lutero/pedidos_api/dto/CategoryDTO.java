@@ -1,39 +1,44 @@
-package br.com.lutero.pedidos_api.entities;
+package br.com.lutero.pedidos_api.dto;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import br.com.lutero.pedidos_api.Enums.Active;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import br.com.lutero.pedidos_api.entities.Category;
 
-@Entity
-@Table(name = "tb_category")
-public class Category {
+public class CategoryDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String nome;
-
     private String descricao;
-
-    @Enumerated(EnumType.STRING)
     private Active active;
-
     private LocalDate createdAt;
-
     private LocalDate updatedAt;
 
-    @OneToMany(mappedBy = "category")
-    private List<Product> products;
+    public CategoryDTO() {
+    }
+
+    public CategoryDTO(Long id, String nome, String descricao, Active active, LocalDate createdAt, LocalDate updatedAt) {
+        this.id = id;
+        this.nome = nome;
+        this.descricao = descricao;
+        this.active = active;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public static CategoryDTO fromEntity(Category category) {
+        if (category == null) {
+            return null;
+        }
+
+        return new CategoryDTO(
+                category.getId(),
+                category.getNome(),
+                category.getDescricao(),
+                category.getActive(),
+                category.getCreatedAt(),
+                category.getUpdatedAt());
+    }
 
     public Long getId() {
         return id;
@@ -82,13 +87,4 @@ public class Category {
     public void setUpdatedAt(LocalDate updatedAt) {
         this.updatedAt = updatedAt;
     }
-
-    public List<Product> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<Product> products) {
-        this.products = products;
-    }
-
 }

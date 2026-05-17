@@ -1,43 +1,51 @@
-package br.com.lutero.pedidos_api.entities;
+package br.com.lutero.pedidos_api.dto;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import br.com.lutero.pedidos_api.Enums.Active;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import br.com.lutero.pedidos_api.entities.Customer;
 
-@Entity
-@Table(name = "tb_customer")
-public class Customer {
+public class CustomerDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
-
     private String email;
-
     private String telefone;
-
     private String cpf;
-
-    @Enumerated(EnumType.STRING)
     private Active active;
-
     private LocalDate createdAt;
-
     private LocalDate updatedAt;
 
-    @OneToMany(mappedBy = "customer")
-    private List<Order> orders;
+    public CustomerDTO() {
+    }
+
+    public CustomerDTO(Long id, String name, String email, String telefone, String cpf, Active active,
+            LocalDate createdAt, LocalDate updatedAt) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.telefone = telefone;
+        this.cpf = cpf;
+        this.active = active;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public static CustomerDTO fromEntity(Customer customer) {
+        if (customer == null) {
+            return null;
+        }
+
+        return new CustomerDTO(
+                customer.getId(),
+                customer.getName(),
+                customer.getEmail(),
+                customer.getTelefone(),
+                customer.getCpf(),
+                customer.getActive(),
+                customer.getCreatedAt(),
+                customer.getUpdatedAt());
+    }
 
     public Long getId() {
         return id;
@@ -101,13 +109,5 @@ public class Customer {
 
     public void setUpdatedAt(LocalDate updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public List<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
     }
 }
